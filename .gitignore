@@ -1,1 +1,3 @@
+build/*.phar
+build/phar
 vendor

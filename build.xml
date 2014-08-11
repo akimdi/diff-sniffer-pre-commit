@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Diff Sniffer pre-commit hook" default="package">
+
+    <!-- Build properties -->
+    <property name="build.dir" value="./build"/>
+    <property name="phar.dir" value="${build.dir}/phar"/>
+    <property name="phar.suffix" value=""/>
+    <property name="build.standard" value="PSR2"/>
+
+    <!-- Creating PHAR filename -->
+    <if>
+        <not><equals arg1="${phar.suffix}" arg2="" /></not>
+        <then>
+            <property name="phar.suffix" value="-${phar.suffix}"/>
+        </then>
+    </if>
+
+    <property name="phar.path" value="${build.dir}/pre-commit${phar.suffix}.phar"/>
+
+    <!-- Target: clean -->
+    <target name="clean">
+        <delete dir="${phar.dir}"/>
+        <mkdir dir="${phar.dir}"/>
+    </target>
+
+    <!-- Target: build -->
+    <target name="build" depends="clean">
+        <copy todir="${phar.dir}">
+            <fileset dir=".">
+                <include name="bin/"/>
+                <include name="src/"/>
+                <include name="vendor/"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Target: package -->
+    <target name="package" depends="build">
+        <delete file="${phar.path}"/>
+        <pharpackage
+                destfile="${phar.path}"
+                basedir="${phar.dir}"
+                stub="${build.dir}/phar-stub.php">
+            <fileset dir="${phar.dir}">
+                <include name="**/**"/>
+            </fileset>
+            <metadata>
+                <element name="version" value="1.5.0"/>
+                <element name="authors">
+                    <element name="Sergei Morozov">
+                        <element name="email" value="morozov@tut.by"/>
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+    </target>
+</project>
