@@ -1,11 +1,21 @@
-language: php
 cache:
   directories:
     - $HOME/.composer/cache
-php:
-  - 7.1
-  - 7.2
-  - nightly
+matrix:
+  include:
+    - os: linux
+      php: 7.1
+    - os: linux
+      php: 7.2
+    - os: linux
+      php: nightly
+    - os: osx
+      language: generic
+      install:
+        - curl -s http://php-osx.liip.ch/install.sh | bash -s 7.1
+        - export PATH=/usr/local/php5/bin:$PATH
+        - curl -s http://getcomposer.org/installer | php
+        - php composer.phar install
 before_script:
   - make install
 script:
